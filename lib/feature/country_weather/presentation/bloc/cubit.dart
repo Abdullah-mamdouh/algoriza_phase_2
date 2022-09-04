@@ -3,7 +3,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/feature/country_weather/domain/usecase/add_favorite_location.dart';
+import 'package:weather_app/feature/country_weather/domain/usecase/add_to_other_locations.dart';
+import 'package:weather_app/feature/country_weather/domain/usecase/get_current_weather_location.dart';
 import 'package:weather_app/feature/country_weather/domain/usecase/get_favourite_location.dart';
+import 'package:weather_app/feature/country_weather/domain/usecase/get_other_locations.dart';
 import 'package:weather_app/feature/country_weather/domain/usecase/get_weather_by_location_name.dart';
 import 'package:weather_app/feature/country_weather/presentation/bloc/states.dart';
 
@@ -16,37 +19,55 @@ class AppBloc extends Cubit<WeatherLocationState> {
   final GetWeatherByLocationName getWeatherByLocationName;
   final AddFavoriteLocation addFavoriteLocation;
   final GetFavoriteLocation getFavoriteLocation;
+  final GetCurrentWeatherLocation getCurrentWeatherLocation;
+  final AddToOtherLocations addToOtherLocations;
+  final GetOtherLocations getOtherLocations;
+
   static List<Weather> favoriteLocations = [];
+  static List<Weather> otherWeatherLocations = [];
+  static Weather? currentLocation ;
   AppBloc({
     required this.getWeatherByLocationName,
+    required this.getCurrentWeatherLocation,
     required this.addFavoriteLocation,
     required this.getFavoriteLocation,
-
+    required this.getOtherLocations,
+    required this.addToOtherLocations
   }) : super(WeatherLocationInitial());
 
   static AppBloc get(context) => BlocProvider.of<AppBloc>(context);
 
-
-  getWeatherLocation(String locationName) async{
+  getWeatherLocation(String locationName) async {
     emit(LoadingWeatherLocationState());
-    final failureOrWeatherLocation = await getWeatherByLocationName(locationName);
+    final failureOrWeatherLocation =
+        await getWeatherByLocationName(locationName);
     emit(_mapFailureOrWeatherLocationToState(failureOrWeatherLocation));
   }
-  getFavoriteLocations()async{
+
+  getCurrentLocation() async {
+    final failureOrWeatherLocation = await getCurrentWeatherLocation();
+    emit(_mapFailureOrWeatherLocationToState(failureOrWeatherLocation));
+  }
+
+  getFavoriteLocations() async {
     final failureOrWeatherLocation = await getFavoriteLocation();
-    // emit(_mapFailureOrFavoriteWeatherLocationsToState(failureOrWeatherLocation));
+    _mapFailureOrFavoriteWeatherLocationsToState(failureOrWeatherLocation);
   }
 
-  refreshWeatherLocation(String locationName) async{
+  refreshWeatherLocation(String locationName) async {
     emit(LoadingWeatherLocationState());
-    final failureOrWeatherLocation = await getWeatherByLocationName(locationName);
+    await getFavoriteLocations();
+    final failureOrWeatherLocation =
+        await getWeatherByLocationName(locationName);
     emit(_mapFailureOrWeatherLocationToState(failureOrWeatherLocation));
   }
 
-  addFavoriteWeatherLocation(String weatherLocationName) async{
+  addFavoriteWeatherLocation(String weatherLocationName) async {
     //emit(LoadingWeatherLocationState());
-
-    final failureOrDoneMessage = await addFavoriteLocation(weatherLocationName);
+    print(weatherLocationName);
+    //final failureOrDoneMessage =
+    await addFavoriteLocation(weatherLocationName);
+    //getOtherWeatherLocations();
 
     // emit(
     //   _eitherDoneMessageOrErrorState(
@@ -54,37 +75,58 @@ class AppBloc extends Cubit<WeatherLocationState> {
     // );
   }
 
-  WeatherLocationState _mapFailureOrWeatherLocationToState(Either<Failure,Weather> either) {
+  addAnotherLocation(String locationName) async {
+    await addToOtherLocations(locationName);
+  }
 
+  getOtherWeatherLocations() async {
+    final failureOrWeatherLocation = await getOtherLocations();
+    _mapFailureOrOtherWeatherLocationsToState(failureOrWeatherLocation);
+  }
+
+  WeatherLocationState _mapFailureOrWeatherLocationToState(
+      Either<Failure, Weather> either) {
     return either.fold(
-          (failure) => ErrorWeatherLocationState(
-              message: _mapFailureToMessage(failure)),
-          (weatherLocations) => LoadedWeatherLocationState(
-        weatherLocation: weatherLocations,
-      ),
+      (failure) =>
+          ErrorWeatherLocationState(message: _mapFailureToMessage(failure)),
+      (weatherLocations) {
+        currentLocation = weatherLocations;
+        return LoadedWeatherLocationState(
+          weatherLocation: weatherLocations,
+        );
+      }
     );
   }
 
-  WeatherLocationState _mapFailureOrFavoriteWeatherLocationsToState(Either<Failure,List<Weather>> either) {
-
+  _mapFailureOrFavoriteWeatherLocationsToState(
+      Either<Failure, List<Weather>> either) {
     return either.fold(
-          (failure) => ErrorWeatherLocationState(
-          message: _mapFailureToMessage(failure)),
-          (favoriteWeatherLocations) {
-          favoriteLocations = favoriteWeatherLocations;
-    }
-      //         LoadedFavouriteWeatherLocationState(
-      //       favoriteWeatherLocations: favoriteWeatherLocations,
-      // ),
-    );
+        (failure) =>
+            ErrorWeatherLocationState(message: _mapFailureToMessage(failure)),
+        (favoriteWeatherLocations) {
+      favoriteLocations = favoriteWeatherLocations;
+      LoadedFavouriteWeatherLocationState(favoriteWeatherLocations: favoriteWeatherLocations);
+    });
   }
 
-  WeatherLocationState _eitherDoneMessageOrErrorState(Either<Failure, Unit> either, String message) {
+  _mapFailureOrOtherWeatherLocationsToState(
+      Either<Failure, List<Weather>> either) {
     return either.fold(
-          (failure) => ErrorAddFavoriteLocationState(
+            (failure) =>
+            ErrorWeatherLocationState(message: _mapFailureToMessage(failure)),
+            (otherLocations) {
+              otherWeatherLocations = otherLocations;
+          LoadedOtherWeatherLocationState(otherLocations: otherLocations);
+        });
+  }
+
+  WeatherLocationState _eitherDoneMessageOrErrorState(
+      Either<Failure, Unit> either, String message) {
+    return either.fold(
+      (failure) => ErrorAddFavoriteLocationState(
         message: _mapFailureToMessage(failure),
       ),
-          (_) => MessageAddFavoriteLocationState(message: message),
+      (_) => MessageAddFavoriteLocationState(message: message),
     );
   }
 
@@ -100,5 +142,4 @@ class AppBloc extends Cubit<WeatherLocationState> {
         return "Unexpected Error , Please try again later .";
     }
   }
-
 }

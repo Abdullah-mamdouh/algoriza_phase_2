@@ -52,5 +52,40 @@ class WeatherRepositoryImpl implements WeatherRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, Weather>> getCurrentWeatherLocation() async{
+    if (await networkInfo.isConnected) {
+      try{
+        final locationWeatherModel = await weatherDataSource.getCurrentWeatherLocation();
+        //Weather locationWeather = Weather(location: locationWeatherModel.location!, forecast: locationWeatherModel.forecast!, current: locationWeatherModel.current!);
+        return Right(locationWeatherModel);
+      }on ServerException {
+        return Left(ServerFailure());
+      }
+    }else{
+      return Left(OfflineFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> addToOtherLocation(String locationName) async {
+    await weatherDataSource.addAnotherLocation(locationName);
+    return Right(unit);
+  }
+
+  @override
+  Future<Either<Failure, List<Weather>>> getOtherLocation() async{
+    if (await networkInfo.isConnected) {
+      try{
+        final otherLocations = await weatherDataSource.getOtherLocation();
+        return Right(otherLocations);
+      }on ServerException {
+        return Left(ServerFailure());
+      }
+    }else{
+      return Left(OfflineFailure());
+    }
+  }
+
 
 }

@@ -12,6 +12,7 @@ abstract class ThemeState extends Equatable {
 }
 
 class InitialColorState extends ThemeState {}
+
 class ChangedBackgroundColorState extends ThemeState {
 
   Color backgroundColor;

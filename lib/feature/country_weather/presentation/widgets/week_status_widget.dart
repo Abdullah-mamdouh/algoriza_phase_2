@@ -26,13 +26,9 @@ class _WeekStatusState extends State<WeekStatus> {
   Widget build(BuildContext context) {
     final days = widget.weatherDay.forecast!.forecastday;
     final currentWeather = widget.weatherDay.current;
-    return BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, state) {
-          if(state is ChangedCardColorState){
-            _color = state.cardColor;
-          }
-          return Container(
-      height: 300,
+    _color = ThemeBloc.cardColor;
+    return Container(
+      height: MediaQuery.of(context).size.height*0.5,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: _color,
@@ -42,51 +38,50 @@ class _WeekStatusState extends State<WeekStatus> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         itemCount: days!.length,
         scrollDirection: Axis.vertical,
-        itemBuilder: (_, index) =>
-            Container(
-              //width: double.infinity,height: 50,
-              child: Row(
-                //crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        itemBuilder: (_, index) => Container(
+          //width: double.infinity,height: 50,
+          child: Row(
+            //crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${getDayName('${days[index].date}')}',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+              //SizedBox(width: 25,),
+              Row(
                 children: [
-                  Text('${getDayName('${days[index].date}')}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 12),),
-                  //SizedBox(width: 25,),
-                  Row(
-                    children: [
-                      Container(
-                        child: Row(
-                          children: [
-                            Image.asset('assets/image/water.png'),
-                            Text(
-                                '${currentWeather!.humidity}', style: TextStyle(
-                                color: Colors.white, fontSize: 12)),
-                            Text('%', style: TextStyle(color: Colors.white,
-                                fontSize: 12)),
-                          ],
-                        ),
-                      ),
-                      Image.network(
-                          'http://cdn.weatherapi.com/weather/64x64/day/113.png'),
-                      //SizedBox(width: 5,),
-                      Image.network(
-                          'http://cdn.weatherapi.com/weather/64x64/night/113.png'),
-                      //SizedBox(width: 15,),
-                      Text(
-                        '${days[index].day!.maxtempC!.toInt()} / ${days[index]
-                            .day!.mintempC!.toInt()}',
-                        style: TextStyle(color: Colors.white, fontSize: 18),),
-
-                    ],
+                  Container(
+                    child: Row(
+                      children: [
+                        Image.asset('assets/image/water.png'),
+                        Text('${currentWeather!.humidity}',
+                            style:
+                            TextStyle(color: Colors.white, fontSize: 12)),
+                        Text('%',
+                            style:
+                            TextStyle(color: Colors.white, fontSize: 12)),
+                      ],
+                    ),
                   ),
-
+                  Image.network(
+                      'http://cdn.weatherapi.com/weather/64x64/day/113.png'),
+                  //SizedBox(width: 5,),
+                  Image.network(
+                      'http://cdn.weatherapi.com/weather/64x64/night/113.png'),
+                  //SizedBox(width: 15,),
+                  Text(
+                    '${days[index].day!.maxtempC!.toInt()} / ${days[index].day!.mintempC!.toInt()}',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
                 ],
               ),
-            ),
+            ],
+          ),
+        ),
       ),
     );
-  });
   }
 
 

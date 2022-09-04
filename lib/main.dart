@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weather_app/feature/country_weather/presentation/pages/location_weather_details.dart';
+import 'package:weather_app/feature/country_weather/presentation/pages/manager_page/manager_page.dart';
 
 import 'dependency_injuction.dart' as di;
 import 'feature/country_weather/data/data_source/weather_remote_data_source.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Posts App',
-          home: HomePage()
+          home: ManagerPage()
           /*SliverScaffold(
         body: ListView.separated(
           physics: const BouncingScrollPhysics(),

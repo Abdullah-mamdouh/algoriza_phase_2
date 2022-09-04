@@ -21,46 +21,41 @@ class _HourStatusState extends State<HourStatus> {
   @override
   Widget build(BuildContext context) {
     final hours = widget.hours;
-    return BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, state) {
-          if (state is ChangedCardColorState) {
-            _color = state.cardColor;
-          }
-          return Container(
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: _color,
+    _color = ThemeBloc.cardColor;
+    return Container(
+      //padding: EdgeInsets.all(12),
+      height: MediaQuery.of(context).size.height*0.25,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: _color,
+      ),
+      child: ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        itemCount: hours.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (_, index) =>
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('${getHourByDateTime('${hours[index].time}')}',
+                  style: TextStyle(color: Colors.white, fontSize: 13),),
+                SizedBox(height: 5,),
+                Image.network('http:${hours[index].condition!.icon}',),
+                SizedBox(height: 15,),
+                Row(
+                  children: [
+                    Image.asset('assets/image/water.png'),
+                    Text('${hours[index].humidity!.toInt()}',
+                        style: TextStyle(
+                            color: Colors.white, fontSize: 12)),
+                    Text('%', style: TextStyle(
+                        color: Colors.white, fontSize: 12)),
+                  ],
+                )
+              ],
             ),
-            child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              itemCount: hours.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (_, index) =>
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('${getHourByDateTime('${hours[index].time}')}',
-                        style: TextStyle(color: Colors.white, fontSize: 12),),
-                      SizedBox(height: 5,),
-                      Image.network('http:${hours[index].condition!.icon}'),
-                      SizedBox(height: 15,),
-                      Row(
-                        children: [
-                          Image.asset('assets/image/water.png'),
-                          Text('${hours[index].humidity!.toInt()}',
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 12)),
-                          Text('%', style: TextStyle(
-                              color: Colors.white, fontSize: 12)),
-                        ],
-                      )
-                    ],
-                  ),
-            ),
-          );
-        }
+      ),
     );
   }
   getHourByDateTime(String dateTime){

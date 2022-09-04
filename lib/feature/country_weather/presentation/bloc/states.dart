@@ -35,6 +35,15 @@ class LoadedFavouriteWeatherLocationState extends WeatherLocationState {
   List<Object> get props => [favoriteWeatherLocations];
 }
 
+class LoadedOtherWeatherLocationState extends WeatherLocationState {
+  final List<Weather> otherLocations;
+
+  LoadedOtherWeatherLocationState({required this.otherLocations});
+
+  @override
+  List<Object> get props => [otherLocations];
+}
+
 class ErrorAddFavoriteLocationState extends WeatherLocationState {
   final String message;
 

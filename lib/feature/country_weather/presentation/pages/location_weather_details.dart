@@ -74,8 +74,8 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
       create: (BuildContext context) => ThemeBloc(),
       child: Scaffold(
         key: _scaffoldKey,
-        backgroundColor: BlocProvider.of<ThemeBloc>(context).backgroundColor,
-        drawer: ProfileDrawer(),
+        backgroundColor: ThemeBloc.backgroundColor,
+        //drawer: ProfileDrawer(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: NestedScrollView(
@@ -83,7 +83,7 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
             headerSliverBuilder: (_, __) => [
               SliverAppBar(
                 backgroundColor:
-                    BlocProvider.of<ThemeBloc>(context).backgroundColor,
+                    ThemeBloc.backgroundColor,
                 leading: Column(
                   children: [
                     SizedBox(
@@ -92,8 +92,9 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
                     Row(
                       children: [
                         IconButton(onPressed: () {
-                          _scaffoldKey.currentState!.openDrawer();
-                        }, icon: Icon(Icons.menu)),
+                          Navigator.pop(context);
+                          //_scaffoldKey.currentState!.openDrawer();
+                        }, icon: Icon(Icons.arrow_back_ios_outlined)),
                         SizedBox(
                           width: actionSpacing,
                         ),
@@ -223,7 +224,7 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
                     SizedBox(
                       height: 20,
                     ),
-                    DailyStatus(),
+                    DailyStatus(currentModel: currentWeatherInfo!),
                   ],
                 ),
               ),
@@ -236,15 +237,8 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
 
   _scrollListener() {
     setState(() {
-      //backgroundState = !backgroundState;
-      // if(titlePaddingTop == 60){
-      //   backgroundColor = constantColor.secondColor;
-      //   //cardColor = constantColor.secondColor
-      // }else if(titlePaddingTop == 170)
-      //   backgroundColor = constantColor.fristColor;
       _onScroll();
       currentExtent = _scrollController.offset;
-
       actionSpacing = _remapCurrentExtent(actionSpacingTween);
       //iconStrokeWidth = _remapCurrentExtent(iconStrokeWidthTween);
       titlePaddingHorizontal = _remapCurrentExtent(titlePaddingHorizontalTween);
@@ -269,21 +263,18 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
   }
 
   void _onScroll() {
-    Color backgroundColor;
-    Color cardColor;
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      backgroundColor = constantColor.secondBackgroundColor;
-      cardColor = constantColor.secondcardColor;
-    } else {
-      backgroundColor = constantColor.fristBackgroundColor;
-      cardColor = constantColor.fristcardColor;
+      ThemeBloc.get(context).changeBackgroundColor(constantColor.secondBackgroundColor);
+      ThemeBloc.get(context).changeCardColor(constantColor.secondcardColor);
     }
-    BlocProvider.of<ThemeBloc>(context).changeBackgroundColor(backgroundColor);
-    BlocProvider.of<ThemeBloc>(context).changeCardColor(cardColor);
-    // setState(() {
-    //   backgroundColor = _color;
-    // });
+    else if (_scrollController.position.pixels ==
+        _scrollController.position.minScrollExtent)
+    {
+
+      ThemeBloc.get(context).changeBackgroundColor(constantColor.fristBackgroundColor);
+      ThemeBloc.get(context).changeCardColor(constantColor.fristcardColor);
+    }
   }
 
   @override

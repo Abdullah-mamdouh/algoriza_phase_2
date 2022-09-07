@@ -1,16 +1,40 @@
-# weather_app
+# Weather App
 
-A new Flutter project.
+Application provide status of location's weather. It show weather of all days of week and weaather of hour at day.
+It enable user from search about any location to know the weather of its.
+He can add any location to favourite card.
+Any Location, he search about it, put in other locations card.
+He can share your location to know details of weather location. 
 
-## Getting Started
+## Screenshots 
 
-This project is a starting point for a Flutter application.
+<div>
+<img src="https://user-images.githubusercontent.com/67171486/187288658-1ef65325-12e3-411c-a1ac-3e90cf022e7c.png" width="200">
+<img src="https://user-images.githubusercontent.com/67171486/187288764-5c0d0b25-a252-4d6f-97c0-b82ae1f735e5.png" width="200">
+<img src="https://user-images.githubusercontent.com/67171486/187288829-59d09dd8-b9a3-43a2-8195-ac55a3d1ad0e.png" width="200">
+<img src="https://user-images.githubusercontent.com/67171486/188291875-23058a65-014a-4e03-a522-a13912b60e1c.png" width="200">
 
-A few resources to get you started if this is your first Flutter project:
+</div>
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Video 
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+To watch video [click here](https://drive.google.com/file/d/1b9KkGYe5BQyhKh4gKZYQi-o_jr2jsGOT/view?usp=drivesdk)
+
+### Main Packages
+
+#### Http
+It Used to deal with api that you can get api key from [here](https://www.weatherapi.com/)
+```
+flutter pub add http
+```
+ 
+#### Bloc
+```
+flutter pub add flutter_bloc
+```
+
+#### Geolocator
+To get the current location of the device
+```
+flutter pub add geolocator
+```

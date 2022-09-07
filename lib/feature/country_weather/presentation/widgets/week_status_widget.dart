@@ -45,9 +45,9 @@ class _WeekStatusState extends State<WeekStatus> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${getDayName('${days[index].date}')}',
+                index == 0 ? 'Today ' : '${getDayName('${days[index].date}')}',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 12),
+                style: TextStyle(color: Colors.white, fontSize: 15,fontWeight: FontWeight.w600),
               ),
               //SizedBox(width: 25,),
               Row(
@@ -65,14 +65,21 @@ class _WeekStatusState extends State<WeekStatus> {
                       ],
                     ),
                   ),
-                  Image.network(
-                      'http://cdn.weatherapi.com/weather/64x64/day/113.png'),
-                  //SizedBox(width: 5,),
-                  Image.network(
-                      'http://cdn.weatherapi.com/weather/64x64/night/113.png'),
+                  Container(
+                    child: Row(
+                      children: [
+                        Image.network(
+                            'http://cdn.weatherapi.com/weather/64x64/day/113.png'),
+                        //SizedBox(width: 5,),
+                        Image.network(
+                            'http://cdn.weatherapi.com/weather/64x64/night/113.png'),
+                      ],
+                    ),
+                  ),
+
                   //SizedBox(width: 15,),
                   Text(
-                    '${days[index].day!.maxtempC!.toInt()} / ${days[index].day!.mintempC!.toInt()}',
+                    '${days[index].day!.maxtempC!.toInt()}° ${days[index].day!.mintempC!.toInt()}°',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ],

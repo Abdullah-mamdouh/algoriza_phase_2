@@ -20,15 +20,15 @@ class _ManagerPageState extends State<ManagerPage> {
 
   @override
   void initState() {
-    // AppBloc.get(context).getFavoriteLocations();
-    // AppBloc.get(context).getOtherWeatherLocations();
+    AppBloc.get(context).getOtherWeatherLocations();
+    AppBloc.get(context).getFavoriteLocations();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    AppBloc.get(context).getFavoriteLocations();
-    AppBloc.get(context).getOtherWeatherLocations();
+    // AppBloc.get(context).getOtherWeatherLocations();
+    // AppBloc.get(context).getFavoriteLocations();
     //AppBloc.get(context).getWeatherLocation(AppBloc.locationName!);
     return Scaffold(
       body: BlocBuilder<AppBloc, WeatherLocationState>(

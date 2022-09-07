@@ -28,14 +28,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    AppBloc.get(context).getFavoriteLocations();
-    AppBloc.get(context).getOtherWeatherLocations();
+    // AppBloc.get(context).getOtherWeatherLocations();
+    // AppBloc.get(context).getFavoriteLocations();
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    AppBloc.get(context).getFavoriteLocations();
-    AppBloc.get(context).getOtherWeatherLocations();
+    // AppBloc.get(context).getOtherWeatherLocations();
+    // AppBloc.get(context).getFavoriteLocations();
 
     final locationInfo = widget.locationWeather.location;
     final forecastInfo = widget.locationWeather.forecast;
@@ -60,17 +60,6 @@ class _HomePageState extends State<HomePage> {
                   _scaffoldKey.currentState!.openDrawer();
                 },
                 icon: Icon(Icons.menu,size: 35),),
-              actions: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 20.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      // searchByCurrentLocation();
-                    },
-                    child: Icon(Icons.location_city, size: 36.0),
-                  ),
-                )
-              ],
               backgroundColor: Colors.transparent,
               elevation: 0.0,
             ),
@@ -106,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                       child: TextField(
                         onSubmitted: (String input) async{
                           AppBloc.get(context).addAnotherLocation(input);
-                          searchByCountryName(input);
+                          await searchByCountryName(input);
                         },
                         style: TextStyle(color: Colors.white, fontSize: 25),
                         decoration: InputDecoration(
@@ -139,6 +128,7 @@ class _HomePageState extends State<HomePage> {
   }
   searchByCountryName(String locationName){
     AppBloc.get(context).getWeatherLocation(locationName);
+    // AppBloc.get(context).getOtherWeatherLocations();
     AppBloc.get(context).state;
 
     // return  BlocBuilder<AppBloc, WeatherLocationState>(

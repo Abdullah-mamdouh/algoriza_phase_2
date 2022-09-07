@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/core/constant_colors/constant_colors.dart';
 import 'package:weather_app/feature/country_weather/domain/entities/weather_entity.dart';
 
+import '../../../../core/util/widget/loader.dart';
 import '../bloc/cubit.dart';
 import '../bloc/states.dart';
 import '../pages/location_weather_details.dart';
@@ -24,7 +25,7 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
 
   @override
   void initState() {
-    AppBloc.get(context).getFavoriteLocations();
+    // AppBloc.get(context).getFavoriteLocations();
     AppBloc.get(context).getOtherWeatherLocations();
     favoriteLocations = AppBloc.favoriteLocations;
     super.initState();
@@ -32,9 +33,9 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc.get(context).getFavoriteLocations();
-    AppBloc.get(context).getOtherWeatherLocations();
-    debugPrint(AppBloc.favoriteLocations.length.toString());
+    // AppBloc.get(context).getFavoriteLocations();
+    // AppBloc.get(context).getOtherWeatherLocations();
+    debugPrint(AppBloc.otherWeatherLocations.length.toString());
     //favoriteLocations = AppBloc.get(context).getFavoriteLocation as List<Weather>;
     return ClipRRect(
       borderRadius: BorderRadius.only(
@@ -64,35 +65,7 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
                         color: Colors.white,
                       )),
                 ),
-                InkWell(
-                  onTap: () async {
-                    debugPrint(AppBloc.currentLocation!.location.toString());
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LocationWeatherDetails(
-                            locationWeather: widget.locationWeather,),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 18),
-                    padding: EdgeInsets.all(15),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadiusDirectional.circular(15),
-                        color: constantColor.drawerButton),
-                    child: Text(
-                      'Weather Details',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ),
+                weatherDetailsButton(),
                 ListTile(
                   leading: Icon(
                     Icons.star_purple500_sharp,
@@ -132,15 +105,18 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
                locationsContainer(AppBloc.otherWeatherLocations),
                 InkWell(
                   onTap: () async {
+                    Navigator.pop(context);
+                    LoaderX.show(context);
                     await AppBloc.get(context).getCurrentLocation();
-                    debugPrint(AppBloc.currentLocation!.location.toString());
-                    Navigator.push(
+                    //debugPrint(AppBloc.currentLocation!.location.toString());
+                    LoaderX.hide();
+                    /*Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => LocationWeatherDetails(
                             locationWeather: AppBloc.currentLocation!),
                       ),
-                    );
+                    );*/
                   },
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 18),
@@ -214,7 +190,7 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
   Widget locationsContainer(List<Weather> locations) {
     return Container(
       //color: Colors.green,
-      height: MediaQuery.of(context).size.height *((locations.length)/100)+50,
+      height: 100 + (MediaQuery.of(context).size.height *((locations.length)/100))%100,
       child: ListView.builder(
         itemCount: locations.length,
         itemBuilder: (context, index) {
@@ -222,7 +198,7 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
           var weatherLocation = locations[index];
           return ListTile(
             onTap: () {
-              //Navigator.pop(context);
+              Navigator.pop(context);
               debugPrint(locations[index].location.toString());
               Navigator.push(
                 context,
@@ -273,6 +249,38 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget weatherDetailsButton(){
+    return GestureDetector(
+      onTap: () {
+        debugPrint(AppBloc.currentLocation!.location.toString());
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LocationWeatherDetails(
+              locationWeather: widget.locationWeather,),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 18),
+        padding: EdgeInsets.all(15),
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadiusDirectional.circular(15),
+            color: constantColor.drawerButton),
+        child: Text(
+          'Weather Details',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w500),
+        ),
       ),
     );
   }

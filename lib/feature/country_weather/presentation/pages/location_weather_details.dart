@@ -40,27 +40,28 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
 
   Curve get curve => Curves.easeOutCubic;
 
-  double actionSpacing = 15;
+  double actionSpacing = 25;
   //double iconStrokeWidth = 1.8;
   double titlePaddingHorizontal = 15;
   double paddingHorizontal = 16;
   double titlePaddingTop = 180;
 
-  final Tween<double> actionSpacingTween = Tween(begin: 15, end: 10);
-  final Tween<double> titlePaddingHorizontalTween = Tween(begin: 15, end: 60);
+  final Tween<double> actionSpacingTween = Tween(begin: 25, end: 10);
+  final Tween<double> titlePaddingHorizontalTween = Tween(begin: 15, end: 50);
   final Tween<double> titlePaddingTopTween = Tween(begin: 180, end: 60);
 
   late WeatherModel weatherLocation;
   ConstantColor constantColor = ConstantColor();
   late Color backgroundColor;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  bool titlePosition = false;
   @override
   void initState() {
     super.initState();
     backgroundColor = constantColor.fristBackgroundColor;
-    final weather = AppBloc.get(context);
-    //weatherLocation =
+    // AppBloc.get(context).getOtherWeatherLocations();
+    // AppBloc.get(context).getFavoriteLocations();
+
     _scrollController.addListener(_scrollListener);
   }
 
@@ -69,7 +70,7 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
     final locationInfo = widget.locationWeather.location;
     final forecastInfo = widget.locationWeather.forecast;
     final currentWeatherInfo = widget.locationWeather.current;
-
+    final today = forecastInfo!.forecastday![0].day;
     return BlocProvider(
       create: (BuildContext context) => ThemeBloc(),
       child: Scaffold(
@@ -82,8 +83,8 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
             controller: _scrollController,
             headerSliverBuilder: (_, __) => [
               SliverAppBar(
-                backgroundColor:
-                    ThemeBloc.backgroundColor,
+                backgroundColor: ThemeBloc.backgroundColor,
+                centerTitle: titlePosition,
                 leading: Column(
                   children: [
                     SizedBox(
@@ -113,12 +114,12 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
                           width: actionSpacing,
                         ),
                         Text(
-                          '${forecastInfo!.forecastday![0].day!.avgtempC!.toInt()}',
+                          '${today!.avgtempC!.toInt()}°',
                           style: TextStyle(fontSize: 44, color: Colors.white),
                         ),
-                        //SizedBox(width: actionSpacing,),
-
-                        //SizedBox(width: actionSpacing,),
+                        SizedBox(
+                          width: 8,
+                        ),
                       ],
                     ),
                   ],
@@ -164,7 +165,7 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
                     ),
                     //centerTitle: true,
                     title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: titlePosition ? CrossAxisAlignment.center:CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -176,7 +177,7 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
                               width: 3,
                             ),
                             Icon(
-                              Icons.add_location_rounded,
+                              Icons.location_on_sharp,
                               color: Colors.white,
                               size: 20,
                             )
@@ -188,12 +189,12 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
                         Column(
                           children: [
                             Text(
-                              '${forecastInfo.forecastday![0].day!.maxtempC!.toInt()} / ${forecastInfo.forecastday![0].day!.mintempC!.toInt()} Feels like 34',
-                              style: TextStyle(fontSize: 22),
+                              '${today.maxtempC!.toInt()}°/${today.mintempC!.toInt()}° Feels like ${today.avgtempC!.toInt()}°',
+                              style: TextStyle(fontSize: 16),
                             ),
                             Text(
                               '${DateFormat.E().format(DateTime.now())}, ${DateFormat.jm().format(DateTime.now())}',
-                              style: TextStyle(fontSize: 22),
+                              style: TextStyle(fontSize: 16),
                             ),
                           ],
                         ),
@@ -211,7 +212,7 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    HourStatus(hours: forecastInfo!.forecastday![0].hour!),
+                    HourStatus(hours: forecastInfo.forecastday![0].hour!),
                     SizedBox(
                       height: 20,
                     ),
@@ -265,13 +266,13 @@ class _LocationWeatherDetailsState extends State<LocationWeatherDetails> {
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
+      titlePosition = true;
       ThemeBloc.get(context).changeBackgroundColor(constantColor.secondBackgroundColor);
       ThemeBloc.get(context).changeCardColor(constantColor.secondcardColor);
     }
     else if (_scrollController.position.pixels ==
         _scrollController.position.minScrollExtent)
-    {
-
+    { titlePosition = false;
       ThemeBloc.get(context).changeBackgroundColor(constantColor.fristBackgroundColor);
       ThemeBloc.get(context).changeCardColor(constantColor.fristcardColor);
     }

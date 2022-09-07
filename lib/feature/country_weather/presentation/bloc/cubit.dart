@@ -67,6 +67,7 @@ class AppBloc extends Cubit<WeatherLocationState> {
     print(weatherLocationName);
     //final failureOrDoneMessage =
     await addFavoriteLocation(weatherLocationName);
+    await getFavoriteLocations();
     //getOtherWeatherLocations();
 
     // emit(
@@ -77,6 +78,7 @@ class AppBloc extends Cubit<WeatherLocationState> {
 
   addAnotherLocation(String locationName) async {
     await addToOtherLocations(locationName);
+    await getOtherWeatherLocations();
   }
 
   getOtherWeatherLocations() async {

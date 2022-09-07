@@ -41,7 +41,7 @@ class WeatherDataSourceImpl implements WeatherDataSource{
   WeatherDataSourceImpl({required this.client, required this.sharedPreferences});
 
   @override
-  Future<Unit> addFavoriteLocation(String locationName) async {
+  Future<Unit> addFavoriteLocation(String locationName) {
     //sharedPreferences.setStringList(Favorite_Location, ['giza']);
     final locations = sharedPreferences.getStringList(Favorite_Location);
     locations != null? favoriteLocations = locations: [];
@@ -125,7 +125,9 @@ class WeatherDataSourceImpl implements WeatherDataSource{
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    return await getAddressFromLatLong(position);
+    debugPrint(position.toJson().toString());
+    return await getWeatherByLocationName('${position.latitude},${position.longitude}');
+    //return await getAddressFromLatLong(position);
   }
 
   /// get information of location by latitude and longitude
@@ -146,6 +148,7 @@ class WeatherDataSourceImpl implements WeatherDataSource{
     // debugPrint(otherLocations!.toList().toString());
     otherLocations!.add(locationName);
     sharedPreferences.setStringList(Other_Location, otherLocations!);
+    debugPrint(otherLocations!.toList().toString());
     return Future.value(unit);
   }
 

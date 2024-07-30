@@ -55,7 +55,7 @@ class WeatherDataSourceImpl implements WeatherDataSource{
   Future<WeatherModel> getWeatherByLocationName(String locationName) async{
     final response = await client.get(
       Uri.parse(
-        "http://api.weatherapi.com/v1/forecast.json?key=3cd5099903384350ac4201921223008&q=${locationName}&days=7"
+        "$BASE_URL&q=${locationName}&days=7"
          // BASE_URL + "&q=${locationName}&days=6"
       ),
       headers: {"Content-Type": "application/json"},
@@ -82,6 +82,9 @@ class WeatherDataSourceImpl implements WeatherDataSource{
         favoriteLocations.add(await getWeatherByLocationName(locations[i]));
       }
       return favoriteLocations;
+    }
+    else if(locations == null){
+      return [];
     } else {
       throw EmptyCacheException();
     }
@@ -161,6 +164,8 @@ class WeatherDataSourceImpl implements WeatherDataSource{
         otherLocations.add(await getWeatherByLocationName(locations[i]));
     }
     return otherLocations;
+    }else if(locations == null){
+      return [];
     } else {
     throw EmptyCacheException();
     }

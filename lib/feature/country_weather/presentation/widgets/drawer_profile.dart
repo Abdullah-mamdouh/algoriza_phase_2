@@ -1,3 +1,4 @@
+
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +8,8 @@ import 'package:weather_app/feature/country_weather/domain/entities/weather_enti
 
 import '../../../../core/util/widget/loader.dart';
 import '../bloc/cubit.dart';
-import '../bloc/states.dart';
 import '../pages/location_weather_details.dart';
-import 'loading_widget.dart';
+
 
 class ProfileDrawer extends StatefulWidget {
   ProfileDrawer({Key? key, required this.locationWeather}) : super(key: key);

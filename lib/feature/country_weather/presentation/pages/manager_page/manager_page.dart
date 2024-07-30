@@ -7,7 +7,6 @@ import '../../bloc/cubit.dart';
 import '../../bloc/states.dart';
 import '../../widgets/loading_widget.dart';
 import '../home_page.dart';
-import '../location_weather_details.dart';
 
 class ManagerPage extends StatefulWidget {
   const ManagerPage({Key? key}) : super(key: key);
@@ -34,10 +33,10 @@ class _ManagerPageState extends State<ManagerPage> {
       body: BlocBuilder<AppBloc, WeatherLocationState>(
         builder: (context, state) {
           if (state is LoadingWeatherLocationState) {
-            return LoadingWidget();
+            return const LoadingWidget();
           }
           else if (state is LoadedWeatherLocationState) {
-            print(state.weatherLocation.forecast!.forecastday!.length);
+            //print(state.weatherLocation.forecast!.forecastday!.length);
             return RefreshIndicator(
               onRefresh: () => _onRefresh(context),
               child: HomePage(locationWeather: state.weatherLocation),
@@ -47,7 +46,7 @@ class _ManagerPageState extends State<ManagerPage> {
           else if (state is ErrorWeatherLocationState) {
             return MessageDisplayWidget(message: state.message);
           }
-          return LoadingWidget();
+          return const LoadingWidget();
         },
       ),
     );
